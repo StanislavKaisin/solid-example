@@ -79,7 +79,7 @@ console.log("printer.html()=", printer.html());
 console.log("printer.xml()=", printer.xml());
 console.log("printer.json()=", printer.json());
 */
-
+/*
 // Open Close Principle
 console.log("Open Close Principle");
 
@@ -166,3 +166,99 @@ const calc = new AreaCalcuator([
 ]);
 
 console.log("calc.sum()=", calc.sum());
+*/
+
+// Liskov Substitution Principle
+
+console.log("Liskov Substitution Principle");
+/*
+class Person {
+  // wrong !!!
+  // access() {
+  //   console.log("You have access");
+  // }
+}
+
+class Member extends Person {
+  access() {
+    console.log("You have access");
+  }
+}
+
+class Guest extends Person {
+  isGuest = true;
+}
+
+// class Frontend extends Person {
+class Frontend extends Member {
+  canCreateFrontend() {}
+}
+
+// class Backend extends Person {
+class Backend extends Member {
+  canCreateBackend() {}
+}
+
+// class PersonFromDifferentCompany extends Person {
+class PersonFromDifferentCompany extends Guest {
+  access() {
+    throw new Error("You have not access!");
+  }
+}
+
+function openSecreteDoor(person) {
+  person.access();
+}
+
+openSecreteDoor(new Frontend());
+openSecreteDoor(new Backend());
+// wrong !!!
+// openSecreteDoor(new PersonFromDifferentCompany());
+*/
+
+class Component {
+  // wrong !!!
+  // render() {
+  //   return `<div>Component</div>`;
+  // }
+  isComponent = true;
+}
+
+class ComponentWithTemplate extends Component {
+  render() {
+    return `<div>Component</div>`;
+  }
+}
+
+class HigherOrderComponent extends Component {}
+
+// class HeaderComponent extends Component {
+class HeaderComponent extends ComponentWithTemplate {
+  onInit() {}
+}
+
+// class FooterComponent extends Component {
+class FooterComponent extends ComponentWithTemplate {
+  afterInit() {}
+}
+
+// class HOC extends Component {
+class HOC extends HigherOrderComponent {
+  render() {
+    throw new Error("Render is impossible");
+  }
+
+  wrapComponent(component) {
+    component.wrapped = true;
+    return component;
+  }
+}
+
+function renderCoponent(component) {
+  // return component.render();
+  console.log(component.render());
+}
+
+renderCoponent(new HeaderComponent());
+renderCoponent(new FooterComponent());
+renderCoponent(new HOC());
