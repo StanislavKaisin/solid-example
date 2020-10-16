@@ -319,6 +319,7 @@ whale.walk();
 */
 //All wrong above
 
+/*
 class Animal {
   constructor(name) {
     this.name = name;
@@ -364,3 +365,62 @@ const whale = new Whale("whale");
 whale.fly();
 whale.swim();
 whale.walk();
+*/
+
+// Dependency Inversion Principle
+console.log(`Dependency Inversion Principle`);
+class Fetch {
+  request() {
+    // return fetch(url).then((res) => res.json());
+    return Promise.resolve("data from fetch");
+  }
+}
+
+class Database {
+  constructor(client) {
+    // wrong !!!
+    // this.fetch = new Fetch();
+    // this.localStorage = new LocalStorage();
+    this.client = client;
+  }
+  getData(key) {
+    // wrong !!!
+    // return this.fetch.request("/dbUrl");
+    // return this.localStorage.get("key");
+    return this.client.clientGet(key);
+  }
+}
+
+class LocalStorage {
+  get() {
+    const data = "data from localStorage";
+    return data;
+    // return localStorage.getItem("key");
+  }
+}
+
+class FetchClient {
+  constructor() {
+    this.fetch = new Fetch();
+  }
+
+  clientGet() {
+    return this.fetch.request("/db");
+  }
+}
+
+class LocalStorageClient {
+  constructor() {
+    this.localStorage = new LocalStorage();
+  }
+
+  clientGet(key) {
+    return this.localStorage.get(key);
+  }
+}
+
+const db1 = new Database(new FetchClient());
+const db2 = new Database(new LocalStorageClient());
+
+console.log(db1.getData("randomKey"));
+console.log(db2.getData("randomKey"));
